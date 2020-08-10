@@ -15,7 +15,6 @@ RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/co
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 RUN apk --no-cache add \
-        gcc musl-dev make \
         ca-certificates \
         gettext \
         bash \
@@ -26,7 +25,6 @@ RUN apk --no-cache add \
         php7-bcmath \
         php7-ctype \
         php7-curl \
-        php7-dev \
         php7-dom \
         php7-fpm \
         php7-fileinfo \
@@ -41,7 +39,7 @@ RUN apk --no-cache add \
         php7-opcache \
         php7-openssl \
         php7-pcntl \
-        php7-pear \
+        php7-pecl-lzf \
         php7-pdo \
         php7-pdo_mysql \
         php7-phar \
@@ -64,9 +62,6 @@ RUN apk --no-cache add \
         postfix \
         unzip \
         && addgroup nginx postdrop && postalias /etc/postfix/aliases && postconf "smtputf8_enable = no" \
-        && cd /tmp \
-        && printf "\n" | pear install pecl/LZF && echo "extension=lzf.so" > /etc/php7/conf.d/19_lzf.ini \
-        && rm -rf /tmp/* && apk --no-cache del gcc musl-dev make php7-dev php7-pear \
         && mkdir /run/nginx && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log
