@@ -49,9 +49,11 @@ echo -e "******************************"
 # Enable Xdebug
 [[ -z "$XDEBUG_INSTALL" ]] && XDEBUG_INSTALL="$DEVELOPMENT_ENV"
 [[ -z "$XDEBUG_REMOTE_HOST" ]] && XDEBUG_REMOTE_HOST="$VM_HOST_IP"
+[[ -z "$XDEBUG_IDE_KEY" ]] && XDEBUG_IDE_KEY="mykey"
 if [ ! -z "$XDEBUG_INSTALL" ] && [ ! -f /.deployed_xdebug ]; then
     if [ ! -f /etc/php7/conf.d/xdebug.ini ]; then
         echo -e "zend_extension=xdebug.so\nxdebug.remote_enable=on\nxdebug.remote_host=$XDEBUG_REMOTE_HOST\nxdebug.remote_port=9000\nxdebug.remote_autostart=0\nxdebug.max_nesting_level=500\n" > /etc/php7/conf.d/xdebug.ini
+        echo -e "export export XDEBUG_CONFIG=\"idekey=$XDEBUG_IDE_KEY\"" >> /root/.bashrc
     fi
     apk --no-cache add php7-xdebug
     touch /.deployed_xdebug
