@@ -66,6 +66,7 @@ RUN apk --no-cache add \
         && addgroup nginx postdrop && postalias /etc/postfix/aliases && postconf "smtputf8_enable = no" \
         && cd /tmp \
         && printf "\n" | pear install pecl/LZF && echo "extension=lzf.so" > /etc/php7/conf.d/19_lzf.ini \
+        && printf "\n" | pear install pecl/zstd && echo "extension=zstd.so" > /etc/php7/conf.d/19_zstd.ini \
         && rm -rf /tmp/* && apk --no-cache del gcc musl-dev make php7-dev php7-pear \
         && mkdir /run/nginx && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
