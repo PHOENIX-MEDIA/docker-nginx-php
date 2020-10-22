@@ -66,6 +66,8 @@ RUN apk --no-cache add \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log
 
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing php7-pecl-zstd
+
 COPY conf/www.conf /etc/php7/php-fpm.d/www.conf
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
 COPY bin/setup.sh /setup.sh
