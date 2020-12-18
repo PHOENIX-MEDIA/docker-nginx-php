@@ -30,7 +30,6 @@ RUN apk --no-cache add \
         php7-fileinfo \
         php7-gd \
         php7-iconv \
-        php7-imagick \
         php7-intl \
         php7-json \
         php7-mbstring \
