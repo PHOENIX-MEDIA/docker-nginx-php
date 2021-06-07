@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.13
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -49,7 +49,6 @@ RUN apk --no-cache add \
         php7-soap \
         php7-sodium \
         php7-sockets \
-        php7-tidy \
         php7-tokenizer \
         php7-xml \
         php7-xmlreader \
@@ -60,7 +59,8 @@ RUN apk --no-cache add \
         supervisor \
         postfix \
         unzip \
-        && addgroup nginx postdrop && postalias /etc/postfix/aliases && postconf "smtputf8_enable = no" \
+        && addgroup nginx postdrop && postalias /etc/postfix/aliases && mkdir /var/log/postfix \
+        && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
         && mkdir /run/nginx && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log
@@ -68,11 +68,12 @@ RUN apk --no-cache add \
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing php7-pecl-zstd
 
 COPY conf/www.conf /etc/php7/php-fpm.d/www.conf
-COPY conf/default.conf /etc/nginx/conf.d/default.conf
+COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
+COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
 COPY bin/run.sh /run.sh
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 
 EXPOSE 80
 

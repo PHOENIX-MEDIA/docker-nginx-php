@@ -6,10 +6,10 @@ echo -e "******************************"
 
 if [ ! -z "$ENVIRONMENT" ]; then
     echo -e "Setting server_name to ${PROJECT}-${ENVIRONMENT}.${SITE_URL} ${ENVIRONMENT}-${PROJECT}.${SITE_URL}"
-    sed -i -e "s#server_name \"\";#server_name \"${PROJECT}-${ENVIRONMENT}.${SITE_URL} ${ENVIRONMENT}-${PROJECT}.${SITE_URL}\";#g" /etc/nginx/conf.d/default.conf
+    sed -i -e "s#server_name \"\";#server_name ${PROJECT}-${ENVIRONMENT}.${SITE_URL} ${ENVIRONMENT}-${PROJECT}.${SITE_URL};#g" /etc/nginx/conf.d/default.conf
 elif [ ! -z "$PROJECT" ]; then
     echo -e "Setting server_name to ${PROJECT}.${SITE_URL}"
-    sed -i -e "s#server_name \"\";#server_name \"${PROJECT}.${SITE_URL}\";#g" /etc/nginx/conf.d/default.conf
+    sed -i -e "s#server_name \"\";#server_name ${PROJECT}.${SITE_URL};#g" /etc/nginx/conf.d/default.conf
 fi
 
 
@@ -52,8 +52,8 @@ echo -e "******************************"
 [[ -z "$XDEBUG_IDE_KEY" ]] && XDEBUG_IDE_KEY="mykey"
 if [ ! -z "$XDEBUG_INSTALL" ] && [ ! -f /.deployed_xdebug ]; then
     if [ ! -f /etc/php7/conf.d/xdebug.ini ]; then
-        echo -e "zend_extension=xdebug.so\nxdebug.remote_enable=on\nxdebug.remote_host=$XDEBUG_REMOTE_HOST\nxdebug.remote_port=9000\nxdebug.remote_autostart=0\nxdebug.max_nesting_level=500\n" > /etc/php7/conf.d/xdebug.ini
-        echo -e "export export XDEBUG_CONFIG=\"idekey=$XDEBUG_IDE_KEY\"" >> /root/.bashrc
+        echo -e "zend_extension=xdebug.so\nxdebug.mode=debug\nxdebug.client_host=$XDEBUG_REMOTE_HOST\nxdebug.client_port=9000\nxdebug.start_with_request=trigger\nxdebug.max_nesting_level=500\n" > /etc/php7/conf.d/xdebug.ini
+        echo -e "export export XDEBUG_SESSION=\"$XDEBUG_IDE_KEY\"" >> /root/.bashrc
     fi
     apk --no-cache add php7-xdebug
     touch /.deployed_xdebug
