@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM alpine:3.15
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -20,6 +20,7 @@ RUN apk --no-cache add \
         bash \
         curl \
         rsync \
+        sudo \
         git \
         php7 \
         php7-bcmath \
@@ -39,6 +40,7 @@ RUN apk --no-cache add \
         php7-openssl \
         php7-pcntl \
         php7-pecl-lzf \
+        php7-pecl-zstd \
         php7-pdo \
         php7-pdo_mysql \
         php7-phar \
@@ -60,12 +62,12 @@ RUN apk --no-cache add \
         postfix \
         unzip \
         && addgroup nginx postdrop && postalias /etc/postfix/aliases && mkdir /var/log/postfix \
+        && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
         && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
-        && mkdir /run/nginx && mkdir /var/www/html && chown nginx:nginx /var/www/html \
+        && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing php7-pecl-zstd
 
 COPY conf/www.conf /etc/php7/php-fpm.d/www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
@@ -73,7 +75,7 @@ COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
 COPY bin/run.sh /run.sh
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
 
 EXPOSE 80
 

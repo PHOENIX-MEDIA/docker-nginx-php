@@ -52,7 +52,7 @@ echo -e "******************************"
 [[ -z "$XDEBUG_IDE_KEY" ]] && XDEBUG_IDE_KEY="mykey"
 if [ ! -z "$XDEBUG_INSTALL" ] && [ ! -f /.deployed_xdebug ]; then
     if [ ! -f /etc/php7/conf.d/xdebug.ini ]; then
-        echo -e "zend_extension=xdebug.so\nxdebug.mode=debug\nxdebug.client_host=$XDEBUG_REMOTE_HOST\nxdebug.client_port=9000\nxdebug.start_with_request=trigger\nxdebug.max_nesting_level=500\n" > /etc/php7/conf.d/xdebug.ini
+        echo -e "zend_extension=xdebug.so\nxdebug.mode=debug,profile\nxdebug.client_host=$XDEBUG_REMOTE_HOST\nxdebug.client_port=9000\nxdebug.start_with_request=trigger\nxdebug.output_dir=/var/www/html/var\nxdebug.max_nesting_level=500\n" > /etc/php7/conf.d/xdebug.ini
         echo -e "export export XDEBUG_SESSION=\"$XDEBUG_IDE_KEY\"" >> /root/.bashrc
     fi
     apk --no-cache add php7-xdebug
