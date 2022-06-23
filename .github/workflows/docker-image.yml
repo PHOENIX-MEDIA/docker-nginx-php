@@ -5,6 +5,8 @@ on:
     branches: [ "7.2", "7.3", "7.4", "8.1" ]
   pull_request:
     branches: [ "7.2", "7.3", "7.4", "8.1" ]
+  schedule:
+    - cron: "0 2 * * *"
 
 jobs:
   docker:
