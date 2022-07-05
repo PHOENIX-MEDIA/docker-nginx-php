@@ -10,10 +10,6 @@ ENV RELAYHOST_PASSWORD=
 # (optional) Should the postfix relay use TLS
 ENV SMTP_USE_TLS=
 
-# Fixes an bug with iconv @see https://github.com/docker-library/php/issues/240
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ gnu-libiconv
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-
 RUN apk --no-cache add \
         ca-certificates \
         gettext \
@@ -26,10 +22,7 @@ RUN apk --no-cache add \
         nginx \
         supervisor \
         postfix \
-        unzip
-
-
-RUN apk add --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing php81-pecl-zstd \ 
+        unzip \
         php81 \
         php81-bcmath \
         php81-ctype \
@@ -48,6 +41,7 @@ RUN apk add --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing php8
         php81-openssl \
         php81-pcntl \
         php81-pecl-lzf \
+        php81-pecl-zstd \
         php81-pdo \
         php81-pdo_mysql \
         php81-phar \
