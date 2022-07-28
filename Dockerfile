@@ -18,6 +18,7 @@ RUN apk --no-cache add \
         rsync \
         sudo \
         git \
+        icu-data-full \
         libmcrypt \
         nginx \
         supervisor \
