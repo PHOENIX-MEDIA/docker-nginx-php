@@ -26,5 +26,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
+          pull: true
           push: true
           tags: phoenixmedia/nginx-php:${{ steps.extract_branch.outputs.branch }}
