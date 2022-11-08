@@ -41,6 +41,7 @@ RUN apk --no-cache add \
         php81-opcache \
         php81-openssl \
         php81-pcntl \
+        php81-pecl-apcu \
         php81-pecl-lzf \
         php81-pecl-zstd \
         php81-pdo \
