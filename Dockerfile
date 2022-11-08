@@ -39,6 +39,7 @@ RUN apk --no-cache add \
         php7-opcache \
         php7-openssl \
         php7-pcntl \
+        php7-pecl-apcu \
         php7-pecl-lzf \
         php7-pecl-zstd \
         php7-pdo \
