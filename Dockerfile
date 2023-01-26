@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:edge
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -10,7 +10,7 @@ ENV RELAYHOST_PASSWORD=
 # (optional) Should the postfix relay use TLS
 ENV SMTP_USE_TLS=
 
-RUN apk --no-cache add \
+RUN apk --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/ add \
         ca-certificates \
         gettext \
         bash \
@@ -18,53 +18,55 @@ RUN apk --no-cache add \
         rsync \
         sudo \
         git \
+        icu-data-full \
         libmcrypt \
         nginx \
         supervisor \
         postfix \
         unzip \
-        php81 \
-        php81-bcmath \
-        php81-ctype \
-        php81-curl \
-        php81-dom \
-        php81-fpm \
-        php81-fileinfo \
-        php81-gd \
-        php81-iconv \
-        php81-intl \
-        php81-json \
-        php81-mbstring \
-        php81-common \
-        php81-mysqlnd \
-        php81-opcache \
-        php81-openssl \
-        php81-pcntl \
-        php81-pecl-lzf \
-        php81-pecl-zstd \
-        php81-pdo \
-        php81-pdo_mysql \
-        php81-phar \
-        php81-posix \
-        php81-redis \
-        php81-session \
-        php81-simplexml \
-        php81-soap \
-        php81-sodium \
-        php81-sockets \
-        php81-tokenizer \
-        php81-xml \
-        php81-xmlreader \
-        php81-xmlwriter \
-        php81-xsl \
-        php81-zip \
+        php82 \
+        php82-bcmath \
+        php82-ctype \
+        php82-curl \
+        php82-dom \
+        php82-fpm \
+        php82-fileinfo \
+        php82-gd \
+        php82-iconv \
+        php82-intl \
+        php82-json \
+        php82-mbstring \
+        php82-common \
+        php82-mysqlnd \
+        php82-opcache \
+        php82-openssl \
+        php82-pcntl \
+        php82-pecl-apcu \
+        php82-pecl-lzf \
+        php82-pecl-zstd \
+        php82-pdo \
+        php82-pdo_mysql \
+        php82-phar \
+        php82-posix \
+        php82-redis \
+        php82-session \
+        php82-simplexml \
+        php82-soap \
+        php82-sodium \
+        php82-sockets \
+        php82-tokenizer \
+        php82-xml \
+        php82-xmlreader \
+        php82-xmlwriter \
+        php82-xsl \
+        php82-zip \
         && addgroup nginx postdrop && postalias /etc/postfix/aliases && mkdir /var/log/postfix \
         && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
         && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
         && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
-        && ln -s /usr/bin/php81 /usr/bin/php \
-        && ln -sf /dev/stderr /var/log/nginx/error.log
+        && ln -sf /dev/stderr /var/log/nginx/error.log \
+        && ln -s /usr/bin/php82 /usr/bin/php
 
 
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
