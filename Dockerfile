@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.17
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -65,7 +65,6 @@ RUN apk --no-cache add \
         && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
         && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
-        && ln -s /usr/bin/php81 /usr/bin/php \
         && ln -sf /dev/stderr /var/log/nginx/error.log
 
 
