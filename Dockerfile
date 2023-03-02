@@ -11,7 +11,7 @@ ENV RELAYHOST_PASSWORD=
 ENV SMTP_USE_TLS=
 
 # Fixes an bug with iconv @see https://github.com/docker-library/php/issues/240
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ gnu-libiconv
+RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv==1.15-r3
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 RUN apk --no-cache add \
