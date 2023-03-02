@@ -67,6 +67,9 @@ RUN apk --no-cache add \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log
 
+# workaround for iconv issue
+RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv==1.15-r3
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
