@@ -73,7 +73,7 @@ RUN apk --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testin
         && ln -s /usr/bin/php82 /usr/bin/php
 
 
-COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
+COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
 COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
