@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.18
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -73,13 +73,13 @@ RUN apk --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testin
         && ln -s /usr/bin/php82 /usr/bin/php
 
 
-COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
+COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
 COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
 COPY bin/run.sh /run.sh
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
 EXPOSE 80
 
