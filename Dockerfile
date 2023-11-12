@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.18
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
