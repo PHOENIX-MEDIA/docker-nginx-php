@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.19
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -66,7 +66,8 @@ RUN apk --no-cache add \
         && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
         && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
-        && ln -sf /dev/stderr /var/log/nginx/error.log
+        && ln -sf /dev/stderr /var/log/nginx/error.log \
+        && ln -s /usr/bin/php81 /usr/bin/php
 
 # workaround for iconv issue
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv==1.15-r3
