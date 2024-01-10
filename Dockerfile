@@ -1,4 +1,4 @@
-FROM alpine:3.17
+FROM alpine:3.18
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -61,7 +61,7 @@ RUN apk --no-cache add \
         php81-xsl \
         php81-zip \
         && addgroup nginx postdrop && postalias /etc/postfix/aliases && mkdir /var/log/postfix \
-        && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
+        && sed -i '/Include files with config snippets into the root context/,+1d' /etc/nginx/nginx.conf \
         && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
         && mkdir /var/www/html && chown nginx:nginx /var/www/html \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
