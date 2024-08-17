@@ -71,6 +71,20 @@ RUN  set -x \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
+# Add v8js
+RUN apk add --no-cache nodejs-dev php83-dev alpine-sdk
+RUN mkdir /usr/local/include && cp -rs /usr/include/node/* /usr/local/include/
+COPY patches/v8js_php8-libnode.patch /tmp/v8js_php8-libnode.patch
+WORKDIR /tmp
+RUN git clone https://github.com/phpv8/v8js.git --branch php8
+WORKDIR /tmp/v8js
+RUN git apply /tmp/v8js_php8-libnode.patch
+RUN phpize && ./configure && make && make test \
+    && cp -v modules/v8js.* `php -r "echo ini_get('extension_dir');"` \
+    && rm -rf /tmp/v8js && rm /tmp/v8js_php8-libnode.patch
+COPY conf/00_v8js.ini /etc/php83/conf.d/00_v8js.ini
+RUN php --ri v8js
+
 COPY conf/www.conf /etc/php83/php-fpm.d/www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
 COPY healthz /var/www/healthz
