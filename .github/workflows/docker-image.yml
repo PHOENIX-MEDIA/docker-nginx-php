@@ -37,8 +37,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
+          platforms: linux/amd64,linux/arm64
           pull: true
           push: true
           tags: thampe/nginx-php:${{ steps.extract_branch.outputs.branch }}
