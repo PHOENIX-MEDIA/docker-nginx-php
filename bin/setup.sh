@@ -37,7 +37,7 @@ fi
 
 # Activate TLS usage
 if [ ! -z "$SMTP_USE_TLS" ]; then
-	postconf -e "smtp_use_tls=yes"
+	postconf -e "smtp_tls_security_level=may"
 	postconf -e "smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt"
 fi
 
