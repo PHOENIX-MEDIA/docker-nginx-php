@@ -64,8 +64,8 @@ fi
 # Set "from" Email-Address
 if [ ! -z "$MAILFROM" ]; then
     echo -e "using email-address $MAILFROM to send the emails"
-    sed -i "s/^sendmail_path.*/sendmail_path = sendmail -t -i -f '${MAILFROM}'/g" /etc/php7/php.ini
-    sed -i "s/^mail.force_extra_parameters.*/mail.force_extra_parameters = \"-f ${MAILFROM}\"/g" /etc/php7/php.ini
+    sed -i "s/^;sendmail_path.*/sendmail_path = sendmail -t -i -f '${MAILFROM}'/g" /usr/local/etc/php/php.ini
+    sed -i "s/^;mail.force_extra_parameters.*/mail.force_extra_parameters = \"-f ${MAILFROM}\"/g" /usr/local/etc/php/php.ini
 fi
 
 # Bash prompt configuration
