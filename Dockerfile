@@ -55,6 +55,7 @@ RUN addgroup nginx postdrop \
     && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
     && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
     && chown nginx:nginx /var/www/html \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
