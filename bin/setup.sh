@@ -51,11 +51,13 @@ echo -e "******************************"
 [[ -z "$XDEBUG_REMOTE_HOST" ]] && XDEBUG_REMOTE_HOST="$VM_HOST_IP"
 [[ -z "$XDEBUG_IDE_KEY" ]] && XDEBUG_IDE_KEY="mykey"
 if [ ! -z "$XDEBUG_INSTALL" ] && [ ! -f /.deployed_xdebug ]; then
-    if [ ! -f /etc/php82/conf.d/50_xdebug.ini ]; then
-        echo -e "zend_extension=xdebug.so\nxdebug.mode=debug,profile\nxdebug.client_host=$XDEBUG_REMOTE_HOST\nxdebug.client_port=9000\nxdebug.start_with_request=trigger\nxdebug.output_dir=/var/www/html/var\nxdebug.max_nesting_level=500\n" > /etc/php82/conf.d/50_xdebug.ini
-        echo -e "export export XDEBUG_SESSION=\"$XDEBUG_IDE_KEY\"" >> /root/.bashrc
+    if [ ! -f /usr/local/etc/php/conf.d/zz-xdebug-settings.ini ]; then
+        echo -e "zend_extension=xdebug.so\nxdebug.mode=debug,profile\nxdebug.client_host=$XDEBUG_REMOTE_HOST\nxdebug.client_port=9000\nxdebug.start_with_request=trigger\nxdebug.output_dir=/var/www/html/var\nxdebug.max_nesting_level=500\n" > /usr/local/etc/php/conf.d/zz-xdebug-settings.ini
+        echo -e "export XDEBUG_SESSION=\"$XDEBUG_IDE_KEY\"" >> /root/.bashrc
     fi
-    apk --no-cache add php82-xdebug
+    apk --no-cache add --virtual .build-deps linux-headers $PHPIZE_DEPS \
+      && pecl install xdebug \
+      && apk del .build-deps
     touch /.deployed_xdebug
 fi
 

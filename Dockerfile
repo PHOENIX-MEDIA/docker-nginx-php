@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM php:8.3-fpm-alpine
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
@@ -10,81 +10,65 @@ ENV RELAYHOST_PASSWORD=
 # (optional) Should the postfix relay use TLS
 ENV SMTP_USE_TLS=
 
-# Fixes an bug with iconv @see https://github.com/docker-library/php/issues/240
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv==1.15-r3
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+# List of additional PHP extensions
+ENV PHP_EXTENSIONS bcmath gd intl opcache pcntl pdo_mysql soap sockets xsl zip
 
-RUN apk --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/ add \
+# Install system dependencies
+RUN apk --no-cache add \
         ca-certificates \
         gettext \
         bash \
         curl \
         rsync \
         sudo \
-        git \
+        patch \
+        freetype \
+        libpng \
+        libjpeg-turbo \
+        libxslt \
+        libzip \
         icu-data-full \
-        libmcrypt \
         nginx \
         supervisor \
         postfix \
-        unzip \
-        php82 \
-        php82-bcmath \
-        php82-ctype \
-        php82-curl \
-        php82-dom \
-        php82-fpm \
-        php82-fileinfo \
-        php82-gd \
-        php82-iconv \
-        php82-intl \
-        php82-json \
-        php82-mbstring \
-        php82-common \
-        php82-mysqlnd \
-        php82-opcache \
-        php82-openssl \
-        php82-pcntl \
-        php82-pecl-apcu \
-        php82-pecl-lzf \
-        php82-pecl-zstd \
-        php82-pdo \
-        php82-pdo_mysql \
-        php82-phar \
-        php82-posix \
-        php82-redis \
-        php82-session \
-        php82-simplexml \
-        php82-soap \
-        php82-sodium \
-        php82-sockets \
-        php82-tokenizer \
-        php82-xml \
-        php82-xmlreader \
-        php82-xmlwriter \
-        php82-xsl \
-        php82-zip \
-        && addgroup nginx postdrop && postalias /etc/postfix/aliases && mkdir /var/log/postfix \
-        && sed -i '/Include files with config snippets into the root context/,+1d' /etc/nginx/nginx.conf \
-        && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
-        && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
-        && mkdir /var/www/html && chown nginx:nginx /var/www/html \
-        && ln -sf /usr/bin/php82 /usr/bin/php \
-        && ln -sf /dev/stdout /var/log/nginx/access.log \
-        && ln -sf /dev/stderr /var/log/nginx/error.log
+        unzip
 
+# Install PHP extensions
+RUN apk --no-cache add --virtual .build-deps \
+     freetype-dev icu-dev zlib-dev libjpeg-turbo-dev libpng-dev libxml2-dev libxslt-dev libzip-dev linux-headers \
+    && docker-php-ext-configure \
+         gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) $PHP_EXTENSIONS \
+    && apk del .build-deps
 
+# Install PECL extensions
+RUN apk --no-cache add --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install apcu redis lzf zstd \
+    && docker-php-ext-enable apcu redis lzf zstd \
+    && apk del .build-deps
+
+# Configure nginx and postfix
+RUN addgroup nginx postdrop \
+    && postalias /etc/postfix/aliases \
+    && mkdir /var/log/postfix \
+    && sed -i '/Include files with config snippets into the root context/,+1d' /etc/nginx/nginx.conf \
+    && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
+    && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
+    && chown nginx:nginx /var/www/html \
+    && ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Copy configuration and scripts
 COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
 COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
 COPY bin/run.sh /run.sh
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 EXPOSE 80
 
 WORKDIR /var/www/html
 
 CMD ["/run.sh"]
-
