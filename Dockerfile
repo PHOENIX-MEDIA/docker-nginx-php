@@ -60,7 +60,7 @@ RUN addgroup nginx postdrop \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # Copy configuration and scripts
-COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
+COPY conf/www.conf /usr/local/etc/php-fpm.d/zz-www.conf
 COPY conf/default.conf conf/healthz.conf /etc/nginx/conf.d/
 COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
