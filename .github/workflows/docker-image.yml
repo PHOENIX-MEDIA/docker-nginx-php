@@ -17,7 +17,7 @@ on:
         - warning
         - debug
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "0 23 */2  * *"
 
 jobs:
   docker:
