@@ -33,18 +33,15 @@ RUN apk --no-cache add \
         postfix \
         unzip
 
-# Install PHP extensions
+# Install and configure PHP extensions
 RUN apk --no-cache add --virtual .build-deps \
-     freetype-dev icu-dev zlib-dev libjpeg-turbo-dev libpng-dev libxml2-dev libxslt-dev libzip-dev linux-headers \
+     freetype-dev icu-dev zlib-dev libjpeg-turbo-dev libpng-dev libxml2-dev libxslt-dev libzip-dev linux-headers $PHPIZE_DEPS\
     && docker-php-ext-configure \
          gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) $PHP_EXTENSIONS \
-    && apk del .build-deps
-
-# Install PECL extensions
-RUN apk --no-cache add --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install apcu redis lzf zstd \
+    && pecl install apcu redis lzf xdebug zstd \
     && docker-php-ext-enable apcu redis lzf zstd \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && apk del .build-deps
 
 # Configure nginx and postfix
@@ -55,7 +52,6 @@ RUN addgroup nginx postdrop \
     && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
     && postconf "smtputf8_enable = no" && postconf "maillog_file=/var/log/postfix/mail.log" \
     && chown nginx:nginx /var/www/html \
-    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
