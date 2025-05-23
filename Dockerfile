@@ -36,7 +36,7 @@ RUN apk --no-cache add \
 # Install and configure PHP extensions
 RUN apk --no-cache add --virtual .build-deps \
      freetype-dev icu-dev zlib-dev libjpeg-turbo-dev libpng-dev libxml2-dev libxslt-dev libzip-dev linux-headers $PHPIZE_DEPS\
-    && docker-php-ext-configure ftp gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) $PHP_EXTENSIONS \
     && pecl install apcu redis lzf xdebug zstd \
     && docker-php-ext-enable apcu redis lzf zstd \
