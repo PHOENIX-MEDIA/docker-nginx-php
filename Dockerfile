@@ -11,7 +11,7 @@ ENV RELAYHOST_PASSWORD=
 ENV SMTP_USE_TLS=
 
 # List of additional PHP extensions
-ENV PHP_EXTENSIONS bcmath gd ftp intl opcache pcntl pdo_mysql soap sockets xsl zip
+ENV PHP_EXTENSIONS bcmath ftp gd intl opcache pcntl pdo_mysql soap sockets xsl zip
 
 # Install system dependencies
 RUN apk --no-cache add \
@@ -36,8 +36,7 @@ RUN apk --no-cache add \
 # Install and configure PHP extensions
 RUN apk --no-cache add --virtual .build-deps \
      freetype-dev icu-dev zlib-dev libjpeg-turbo-dev libpng-dev libxml2-dev libxslt-dev libzip-dev linux-headers $PHPIZE_DEPS\
-    && docker-php-ext-configure \
-         gd ftp --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    && docker-php-ext-configure ftp gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) $PHP_EXTENSIONS \
     && pecl install apcu redis lzf xdebug zstd \
     && docker-php-ext-enable apcu redis lzf zstd \
