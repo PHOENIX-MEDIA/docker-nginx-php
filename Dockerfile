@@ -18,6 +18,7 @@ RUN apk --no-cache add \
         ca-certificates \
         gettext \
         bash \
+        git \
         curl \
         rsync \
         sudo \
