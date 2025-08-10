@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: ["8.3" ]
+    branches: ["8.3", "8.3-testing" ]
   pull_request:
-    branches: ["8.3" ]
+    branches: ["8.3", "8.3-testing" ]
   workflow_dispatch:
     inputs:
       logLevel:

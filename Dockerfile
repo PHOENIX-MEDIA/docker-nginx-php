@@ -65,6 +65,7 @@ RUN  set -x \
         php83-xmlwriter \
         php83-xsl \
         php83-zip \
+        php83-ftp \
     && sed -i '/Include files with config snippets into the root context/,+1d' /etc/nginx/nginx.conf \
     && sed -ie "s#include /etc/nginx/http.d/#include /etc/nginx/conf.d/#g" /etc/nginx/nginx.conf \
     && mkdir /var/www/html && chown nginx:nginx /var/www/html \
@@ -74,14 +75,12 @@ RUN  set -x \
 # Add v8js
 RUN apk add --no-cache nodejs-dev php83-dev alpine-sdk
 RUN mkdir /usr/local/include && cp -rs /usr/include/node/* /usr/local/include/
-COPY patches/v8js_php8-libnode.patch /tmp/v8js_php8-libnode.patch
 WORKDIR /tmp
 RUN git clone https://github.com/phpv8/v8js.git --branch php8
 WORKDIR /tmp/v8js
-RUN git apply /tmp/v8js_php8-libnode.patch
 RUN phpize && ./configure && make && make test \
     && cp -v modules/v8js.* `php -r "echo ini_get('extension_dir');"` \
-    && rm -rf /tmp/v8js && rm /tmp/v8js_php8-libnode.patch
+    && rm -rf /tmp/v8js
 COPY conf/00_v8js.ini /etc/php83/conf.d/00_v8js.ini
 RUN php --ri v8js
 
@@ -91,7 +90,7 @@ COPY healthz /var/www/healthz
 COPY bin/setup.sh /setup.sh
 COPY bin/run.sh /run.sh
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 EXPOSE 80
 
