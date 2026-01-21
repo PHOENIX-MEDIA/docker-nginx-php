@@ -14,7 +14,7 @@ ENV SMTP_USE_TLS=
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ gnu-libiconv==1.15-r3
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
-RUN apk --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/ add \
+RUN apk --no-cache add \
         ca-certificates \
         gettext \
         bash \
