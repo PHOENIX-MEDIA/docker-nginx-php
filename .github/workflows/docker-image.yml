@@ -27,8 +27,9 @@ jobs:
         include:
           - platform: linux/amd64
             runner: ubuntu-latest
-          - platform: linux/arm64
-            runner: ubuntu-24.04-arm
+          # temporär deaktiviert
+          # - platform: linux/arm64
+          #   runner: ubuntu-24.04-arm
     steps:
       - name: Extract branch name
         shell: bash
