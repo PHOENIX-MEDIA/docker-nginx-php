@@ -11,7 +11,7 @@ ENV RELAYHOST_PASSWORD=
 ENV SMTP_USE_TLS=
 
 # List of additional PHP extensions
-ENV PHP_EXTENSIONS bcmath ftp gd intl opcache pcntl pdo_mysql soap sockets xsl zip
+ENV PHP_EXTENSIONS bcmath ftp gd intl pcntl pdo_mysql soap sockets xsl zip
 
 # Install system dependencies
 RUN apk --no-cache add \
