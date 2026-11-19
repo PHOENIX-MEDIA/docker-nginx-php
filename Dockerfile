@@ -1,4 +1,4 @@
-FROM php:8.2.35-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 # An (optional) host that relays your msgs
 ENV RELAYHOST=
